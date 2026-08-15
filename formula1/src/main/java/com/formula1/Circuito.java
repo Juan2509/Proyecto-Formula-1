@@ -95,4 +95,54 @@ public class Circuito {
     public double getDesgasteNeumaticos() {
         return desgasteNeumaticos;
     }
+
+
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+    public void setPais(String pais) {
+        this.pais = pais;
+    }
+
+    public void setLongitud(double longitud) {
+        this.longitud = longitud;
+    }
+
+    public void setVueltas(int vueltas) {
+        this.vueltas = vueltas;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setTiempoRecord(String tiempoRecord) {
+        this.tiempoRecord = tiempoRecord;
+    }
+
+    public void setPilotoRecord(String pilotoRecord) {
+        this.pilotoRecord = pilotoRecord;
+    }
+
+    public void setAnioRecord(int anioRecord) {
+        this.anioRecord = anioRecord;
+    }
+
+    public void setGanadores(Map<Integer, Integer> ganadores) {
+        this.ganadores = ganadores;
+    }
+
+    public void setClimaPromedio(String climaPromedio) {
+        this.climaPromedio = climaPromedio;
+    }
+
+    public void setConsumoCombustible(double consumoCombustible) {
+        this.consumoCombustible = consumoCombustible;
+    }
+
+    public void setDesgasteNeumaticos(double desgasteNeumaticos) {
+        this.desgasteNeumaticos = desgasteNeumaticos;
+    }
 }
