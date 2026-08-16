@@ -638,7 +638,7 @@ public class GestorCircuitos {
 
                 case "Tiempo récord":
 
-                String nuevoTiempo = JOptionPane.showInputDialog("Ingrese el nuevo piloto del récord: ");
+                String nuevoTiempo = JOptionPane.showInputDialog("Ingresa el nuevo tiempo récord: ");
 
                 if (nuevoTiempo == null || nuevoTiempo.trim().isEmpty()) {
                     return;
@@ -726,7 +726,7 @@ public class GestorCircuitos {
 
             case "Consumo de combustible":
 
-                String entradaConsumo = JOptionPane.showInputDialog("Ingrese el nuevo consumo de combústible:");
+                String entradaConsumo = JOptionPane.showInputDialog("Ingrese el nuevo consumo de combustible:");
 
                 if (entradaConsumo == null) {
                     return;
@@ -737,7 +737,7 @@ public class GestorCircuitos {
                     double nuevoConsumo = Double.parseDouble(entradaConsumo);
 
                     if (nuevoConsumo < 0) {
-                        JOptionPane.showMessageDialog(null, "El consumo no pude ser negativo");
+                        JOptionPane.showMessageDialog(null, "El consumo no puede ser negativo");
                         return;
                     }
 
@@ -755,5 +755,40 @@ public class GestorCircuitos {
 
         JOptionPane.showMessageDialog(null, "Circuito actualizado correctamente");
 
+    }
+
+    public void eliminarCircuitos() {
+
+        if (circuitos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay circuitos registrados");
+            return;
+        }
+
+        String nombre = JOptionPane.showInputDialog("Ingrese el nombre del circuito que desea eliminar: ");
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return;
+        }
+
+        Circuito circuito = circuitos.get(nombre);
+
+        if (circuito == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró un circuito con ese nombre");
+            return;
+        }
+
+        int confirmacion = JOptionPane.showConfirmDialog(
+            null,
+            "Está seguro de que desea eliminar el circuito ?" + circuito.getNombre() + "?",
+            "Confirmar eliminación",
+            JOptionPane.YES_NO_OPTION);
+
+        if (confirmacion != JOptionPane.YES_OPTION) {
+            return;
+        }
+
+        circuitos.remove(nombre);
+
+        JOptionPane.showMessageDialog(null, "Circuito eliminado correctamente");
     }
 }
