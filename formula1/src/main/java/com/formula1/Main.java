@@ -8,13 +8,14 @@ public class Main {
 
     public static void main(String[] args) {
         GestorCircuitos gestorCircuitos = new GestorCircuitos();
+        GestorVehiculos gestorVehiculos = new GestorVehiculos();
 
         int opcion;
 
         do { 
             
             String entrada = JOptionPane.showInputDialog(null,
-                " --- [ Simulador de Formula 1 ] --- \n\n 1. Gestión de circuitos\n 2. Gestión de pilotos y equipos\n 3. gestión de vehículos\n 4. Configuración de simulación\n 5. Iniciar simulación\n 6. Salir\n\n Seleccione una opción:"
+                " --- [ Simulador de Formula 1 ] --- \n\n 1. Gestión de circuitos\n 2. Gestión de pilotos y equipos\n 3. Gestión de vehículos\n 4. Configuración de simulación\n 5. Iniciar simulación\n 6. Salir\n\n Seleccione una opción:"
             );
 
             if (entrada == null) {
@@ -44,7 +45,7 @@ public class Main {
 
                 case 3:
 
-                    JOptionPane.showMessageDialog(null, "Modulo de vehículos (Coming Soon!)");
+                    menuVehiculos(gestorVehiculos);
                     break;
 
                 case 4:
@@ -115,6 +116,75 @@ public class Main {
                     break;
 
                 case 6:
+
+                return;
+
+                default:
+                    JOptionPane.showMessageDialog(null, "Opción inválida");
+
+            }
+        } while (true);
+    }
+
+    public static void menuVehiculos(GestorVehiculos gestorVehiculos) {
+
+        int opcion;
+
+        do {
+
+            String entrada = JOptionPane.showInputDialog(null,
+                "Gestión de Vehículos: \n\n 1. Agregar vehículo\n 2. Listar vehículos\n 3. Buscar vehículo\n 4. Editar vehículo\n 5. Eliminar vehículo\n 6. Configurar rendimiento\n 7. Asignar piloto\n 8. Comparar vehículos\n 9. Volver al menú principal\n\n Seleccione una opción: "
+            );
+
+            if (entrada == null) {
+                return;
+            }
+
+            try {
+
+                opcion = Integer.parseInt(entrada);
+
+            } catch (NumberFormatException e) {
+
+                JOptionPane.showMessageDialog(null, "La opción debe ser un número");
+                continue;
+            }
+
+            switch (opcion) {
+
+                case 1:
+                    gestorVehiculos.agregarVehiculo();
+                    break;
+
+                case 2:
+                    gestorVehiculos.listarVehiculo();
+                    break;
+
+                case 3:
+                    gestorVehiculos.buscarVehiculo();
+                    break;
+
+                case 4:
+                    gestorVehiculos.editarVehiculo();
+                    break;
+
+                case 5:
+                    gestorVehiculos.eliminarVehiculo();
+                    break;
+
+                case 6:
+                    gestorVehiculos.gestionarRendimiento();
+                    break;
+
+                case 7:
+                    gestorVehiculos.asignarPiloto();
+                    break;
+
+                case 8:
+                    gestorVehiculos.compararVehiculos();
+                    break;
+
+                case 9:
 
                 return;
 

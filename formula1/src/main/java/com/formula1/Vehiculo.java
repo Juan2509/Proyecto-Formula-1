@@ -10,7 +10,7 @@ public class Vehiculo {
     private double velocidadMaxima;
     private double aceleracion;
     private Map<Integer, String> pilotos;
-    private Map<String, Map<String, Map<String, Double>>> rendimiento;
+    private Map<String, Map<String, Double>> rendimiento;
 
     public Vehiculo(
             String equipo,
@@ -19,7 +19,7 @@ public class Vehiculo {
             double velocidadMaxima,
             double aceleracion,
             Map<Integer, String> pilotos,
-            Map<String, Map<String, Map<String, Double>>> rendimiento) {
+            Map<String, Map<String, Double>> rendimiento) {
 
         this.equipo = equipo;
         this.modelo = modelo;
@@ -55,7 +55,7 @@ public class Vehiculo {
         return pilotos;
     }
 
-    public Map<String, Map<String, Map<String, Double>>> getRendimiento() {
+    public Map<String, Map<String, Double>> getRendimiento() {
         return rendimiento;
     }
 
@@ -85,7 +85,7 @@ public class Vehiculo {
     }
 
     public void setRendimiento(
-        Map<String, Map<String, Map<String, Double>>> rendimiento) {
+        Map<String, Map<String, Double>> rendimiento) {
 
         this.rendimiento = rendimiento;
 
