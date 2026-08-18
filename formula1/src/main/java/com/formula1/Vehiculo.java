@@ -1,5 +1,6 @@
 package com.formula1;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class Vehiculo {
@@ -7,17 +8,18 @@ public class Vehiculo {
     private String equipo;
     private String modelo;
     private String motor;
-    private double velocidadMaxima;
-    private double aceleracion;
+    private Double velocidadMaxima;
+    private Double aceleracion;
     private Map<Integer, String> pilotos;
     private Map<String, Map<String, Double>> rendimiento;
+    private Map<String, String> especificacionesTecnicas;
 
     public Vehiculo(
             String equipo,
             String modelo,
             String motor,
-            double velocidadMaxima,
-            double aceleracion,
+            Double velocidadMaxima,
+            Double aceleracion,
             Map<Integer, String> pilotos,
             Map<String, Map<String, Double>> rendimiento) {
 
@@ -28,6 +30,8 @@ public class Vehiculo {
         this.aceleracion = aceleracion;
         this.pilotos = pilotos;
         this.rendimiento = rendimiento;
+        this.especificacionesTecnicas = new LinkedHashMap<>();
+        cargarEspecificacionesTecnicas();
 
     }
 
@@ -43,11 +47,11 @@ public class Vehiculo {
         return motor;
     }
 
-    public double getVelocidadMaxima() {
+    public Double getVelocidadMaxima() {
         return velocidadMaxima;
     }
 
-    public double getAceleracion() {
+    public Double getAceleracion() {
         return aceleracion;
     }
 
@@ -57,6 +61,10 @@ public class Vehiculo {
 
     public Map<String, Map<String, Double>> getRendimiento() {
         return rendimiento;
+    }
+
+    public Map<String, String> getEspecificacionesTecnicas() {
+        return especificacionesTecnicas;
     }
 
 
@@ -76,7 +84,7 @@ public class Vehiculo {
         this.velocidadMaxima = velocidadMaxima;
     }
 
-    public void setAceleracion(double aceleracion) {
+    public void setAceleracion(Double aceleracion) {
         this.aceleracion = aceleracion;
     }
 
@@ -89,5 +97,17 @@ public class Vehiculo {
 
         this.rendimiento = rendimiento;
 
+    }
+
+    private void cargarEspecificacionesTecnicas() {
+        especificacionesTecnicas.put("Peso mínimo", "768 kg");
+        especificacionesTecnicas.put("Batalla", "3400 mm");
+        especificacionesTecnicas.put("Ancho", "1900 mm");
+        especificacionesTecnicas.put("Downforce", "Reducido 30%");
+        especificacionesTecnicas.put("Drag", "Reducido 55%");
+        especificacionesTecnicas.put("Neumáticos", "18 pulgadas; 25 mm más angostos delante y 30 mm más angostos detrás");
+        especificacionesTecnicas.put("Combustible", "100% sostenible");
+        especificacionesTecnicas.put("Recuperación de energía por frenado", "8.5 MJ por vuelta");
+        especificacionesTecnicas.put("Aerodinámica y adelantamiento", "Sin DRS tradicional; Straight-Mode, Corner-Mode y Overtake Mode");
     }
 }

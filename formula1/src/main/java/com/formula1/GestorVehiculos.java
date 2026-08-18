@@ -8,41 +8,205 @@ import javax.swing.JOptionPane;
 public class GestorVehiculos {
     
     private Map<String, Vehiculo> vehiculos;
+    private GestorPilotos gestorPilotos;
 
     public GestorVehiculos() {
         vehiculos = new HashMap<>();
+        cargarVehiculosPredefinidos();
+    }
+
+    public void setGestorPilotos(GestorPilotos gestorPilotos) {
+        this.gestorPilotos = gestorPilotos;
+    }
+
+    private void cargarVehiculosPredefinidos() {
+        registrarVehiculoPredefinido("Red Bull Racing", "RB22", "Red Bull Ford Powertrains (propio)", 358.0, 2.3, "1.9 / 2.1 / 2.4", "1.5 / 0.8 / 2.5");
+        registrarVehiculoPredefinido("Ferrari", "SF-26", "Ferrari", 360.0, 2.3, "2.0 / 2.2 / 2.5", "1.6 / 0.9 / 2.6");
+        registrarVehiculoPredefinido("McLaren", "MCL40", "Mercedes", 355.0, 2.4, "1.8 / 2.0 / 2.3", "1.4 / 0.7 / 2.3");
+        registrarVehiculoPredefinido("Mercedes", "W17", "Mercedes", 352.0, 2.4, "1.9 / 2.1 / 2.4", "1.5 / 0.8 / 2.4");
+        registrarVehiculoPredefinido("Aston Martin", "AMR26", "Honda", 348.0, 2.5, "2.1 / 2.3 / 2.6", "1.7 / 1.0 / 2.7");
+        registrarVehiculoPredefinido("Williams", "FW48", "Mercedes", 350.0, 2.5, "1.7 / 1.9 / 2.2", "1.3 / 0.6 / 2.1");
+        registrarVehiculoPredefinido("Alpine", "A526", "Mercedes (cliente)", 345.0, 2.6, "2.0 / 2.2 / 2.5", "1.6 / 0.9 / 2.5");
+        registrarVehiculoPredefinido("Haas", "VF-26", "Ferrari", 347.0, 2.6, "1.9 / 2.1 / 2.4", "1.5 / 0.8 / 2.4");
+        registrarVehiculoPredefinido("Audi", "R26", "Audi (propio)", 346.0, 2.6, "2.0 / 2.2 / 2.5", "1.6 / 0.9 / 2.5");
+        registrarVehiculoPredefinido("Racing Bulls", "VCARB03", "Ford Red Bull Powertrains", 349.0, 2.5, "1.8 / 2.0 / 2.3", "1.4 / 0.7 / 2.3");
+        registrarVehiculoPredefinido("Cadillac", "MAC-26", "Ferrari (cliente)", 344.0, 2.7, "2.1 / 2.3 / 2.6", "1.7 / 1.0 / 2.8");
+    }
+
+    private void registrarVehiculoPredefinido(String equipo, String modelo, String motor, Double velocidadMaxima, Double aceleracion, String consumoPorModo, String desgastePorModo) {
+        Vehiculo vehiculo = new Vehiculo(
+            equipo,
+            modelo,
+            motor,
+            velocidadMaxima,
+            aceleracion,
+            new HashMap<>(),
+            new HashMap<>()
+        );
+        vehiculo.getEspecificacionesTecnicas().put("Consumo por modo (Normal / Agresiva / Ahorro)", consumoPorModo);
+        vehiculo.getEspecificacionesTecnicas().put("Desgaste por modo (Normal / Agresiva / Ahorro)", desgastePorModo);
+        vehiculos.put(modelo, vehiculo);
+    }
+
+    public void mostrarEspecificacionesParaUsuario() {
+        String[] ordenModelos = {"RB22", "SF-26", "MCL40", "W17", "AMR26", "FW48", "A526", "VF-26", "R26", "VCARB03", "MAC-26"};
+        int vehiculosPorPagina = 3;
+        int paginaActual = 0;
+        int totalPaginas = (int) Math.ceil((double) ordenModelos.length / vehiculosPorPagina);
+
+        while (true) {
+            int inicio = paginaActual * vehiculosPorPagina;
+            int fin = Math.min(inicio + vehiculosPorPagina, ordenModelos.length);
+            StringBuilder mensaje = new StringBuilder("Especificaciones de vehículos 2026 - Página ")
+                    .append(paginaActual + 1).append(" de ").append(totalPaginas).append("\n");
+            mensaje.append("Valores por modo: Normal / Agresiva / Ahorro.\n\n");
+
+            for (int indice = inicio; indice < fin; indice++) {
+                Vehiculo vehiculo = vehiculos.get(ordenModelos[indice]);
+                if (vehiculo == null) {
+                    continue;
+                }
+
+                mensaje.append(vehiculo.getEquipo()).append(" - ").append(vehiculo.getModelo()).append("\n");
+                mensaje.append("Motor: ").append(vehiculo.getMotor()).append("\n");
+                mensaje.append("Velocidad máxima: ").append(formatearDato(vehiculo.getVelocidadMaxima(), "km/h")).append("\n");
+                mensaje.append("Aceleración 0-100: ").append(formatearDato(vehiculo.getAceleracion(), "segundos")).append("\n");
+                mensaje.append("Consumo por modo: ").append(vehiculo.getEspecificacionesTecnicas().get("Consumo por modo (Normal / Agresiva / Ahorro)")).append("\n");
+                mensaje.append("Desgaste por modo: ").append(vehiculo.getEspecificacionesTecnicas().get("Desgaste por modo (Normal / Agresiva / Ahorro)")).append("\n");
+                mensaje.append("--------------------------------\n");
+            }
+
+            mensaje.append("\n1. Siguiente página\n2. Anterior página\n3. Salir");
+            String opcion = JOptionPane.showInputDialog(null, mensaje.toString());
+
+            if (opcion == null || opcion.equals("3")) {
+                return;
+            }
+
+            if (opcion.equals("1")) {
+                if (paginaActual < totalPaginas - 1) {
+                    paginaActual++;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ya está en la última página.");
+                }
+            } else if (opcion.equals("2")) {
+                if (paginaActual > 0) {
+                    paginaActual--;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ya está en la primera página.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
+        }
     }
 
     public void agregarVehiculo() {
         
-        String equipo = JOptionPane.showInputDialog("Ingrese el equipo al que pertenece el vehículo: ");
+        String[][] opcionesVehiculos = {
+            {"McLaren", "MCL40", "Mercedes"},
+            {"Mercedes", "W17", "Mercedes"},
+            {"Red Bull Racing", "RB22", "Red Bull Ford"},
+            {"Ferrari", "SF-26", "Ferrari"},
+            {"Williams", "FW48", "Mercedes"},
+            {"Racing Bulls", "VCARB 03", "Red Bull Ford"},
+            {"Aston Martin", "AMR26", "Honda"},
+            {"Haas", "VF-26", "Ferrari"},
+            {"Audi", "R26", "Audi"},
+            {"Alpine", "A526", "Mercedes"},
+            {"Cadillac", "MAC-26", "Ferrari"}
+        };
+        String[] opciones = new String[opcionesVehiculos.length + 1];
 
-        if (equipo == null || equipo.trim().isEmpty()) {
-            
-            JOptionPane.showMessageDialog(null, "El equipo no puede estar vaciío");
+        for (int indice = 0; indice < opcionesVehiculos.length; indice++) {
+            opciones[indice] = (indice + 1) + ". " + opcionesVehiculos[indice][0] + " - " + opcionesVehiculos[indice][1]
+                + " (Motor: " + opcionesVehiculos[indice][2] + ")";
+        }
+        opciones[opcionesVehiculos.length] = (opcionesVehiculos.length + 1) + ". Agregar vehículo personalizado";
+
+        String seleccion = (String) JOptionPane.showInputDialog(
+            null,
+            "Seleccione la escuderia y el monoplaza:",
+            "Registrar vehiculo",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opciones,
+            opciones[0]
+        );
+
+        if (seleccion == null) {
             return;
         }
 
-        String modelo = JOptionPane.showInputDialog("Ingrese el modelo del vehículo: ");
+        int indiceSeleccionado = -1;
 
-        if (modelo == null || modelo.trim().isEmpty()) {
-            
-            JOptionPane.showMessageDialog(null, "El modelo no puede estar vacío");
+        for (int indice = 0; indice < opciones.length; indice++) {
+            if (opciones[indice].equals(seleccion)) {
+                indiceSeleccionado = indice;
+                break;
+            }
+        }
+
+        if (indiceSeleccionado == -1) {
+            JOptionPane.showMessageDialog(null, "No se pudo identificar el vehiculo seleccionado");
             return;
         }
 
-        if (vehiculos.containsKey(modelo)) {
+        String equipo;
+        String modelo;
+        String motor;
 
-            JOptionPane.showMessageDialog(null, "Ya existe un vehículo con ese modelo");
-            return;
-        }
+        // Si seleccionó la opción de vehículo personalizado
+        if (indiceSeleccionado == opcionesVehiculos.length) {
+            equipo = JOptionPane.showInputDialog("Ingrese el nombre del equipo:");
+            if (equipo == null || equipo.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El equipo no puede estar vacío");
+                return;
+            }
 
-        String motor = JOptionPane.showInputDialog("Ingrese el motor del vehículo:");
+            modelo = JOptionPane.showInputDialog("Ingrese el modelo del vehículo:");
+            if (modelo == null || modelo.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El modelo no puede estar vacío");
+                return;
+            }
 
-        if (motor == null || motor.trim().isEmpty()) {
+            if (vehiculos.containsKey(modelo)) {
+                JOptionPane.showMessageDialog(null, "Ya existe un vehículo con ese modelo");
+                return;
+            }
 
-            JOptionPane.showMessageDialog(null, "El motor no puede estar vacío");
-            return;
+            motor = JOptionPane.showInputDialog("Ingrese el motor del vehículo:");
+            if (motor == null || motor.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El motor no puede estar vacío");
+                return;
+            }
+        } else {
+            // Vehículo predefinido
+            equipo = opcionesVehiculos[indiceSeleccionado][0];
+
+            if (equipo == null || equipo.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El equipo no puede estar vacío");
+                return;
+            }
+
+            modelo = opcionesVehiculos[indiceSeleccionado][1];
+
+            if (modelo == null || modelo.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El modelo no puede estar vacío");
+                return;
+            }
+
+            if (vehiculos.containsKey(modelo)) {
+                JOptionPane.showMessageDialog(null, "Ya existe un vehículo con ese modelo");
+                return;
+            }
+
+            motor = opcionesVehiculos[indiceSeleccionado][2];
+
+            if (motor == null || motor.trim().isEmpty()) {
+                JOptionPane.showMessageDialog(null, "El motor no puede estar vacío");
+                return;
+            }
         }
 
         String entradaVelocidad = JOptionPane.showInputDialog("Ingrese la velocidad máxima del vehículo en km/h: ");
@@ -116,20 +280,54 @@ public class GestorVehiculos {
             return;
         }
 
-        String mensaje = "Vehículos registrados : \n\n";
+        // Convertir el mapa de vehículos a un array para poder paginar
+        Vehiculo[] listaVehiculos = vehiculos.values().toArray(new Vehiculo[0]);
+        int vehiculosPorPagina = 3;
+        int paginaActual = 0;
+        int totalPaginas = (int) Math.ceil((double) listaVehiculos.length / vehiculosPorPagina);
 
-        for (Vehiculo vehiculo : vehiculos.values()) {
+        while (true) {
+            int inicio = paginaActual * vehiculosPorPagina;
+            int fin = Math.min(inicio + vehiculosPorPagina, listaVehiculos.length);
 
-            mensaje += "Equipo: " + vehiculo.getEquipo() + "\n";
-            mensaje += "Modelo: " + vehiculo.getModelo() + "\n";
-            mensaje += "Motor: " + vehiculo.getMotor() + "\n";
-            mensaje += "Velocidad máxima: " + vehiculo.getVelocidadMaxima() + " km/h\n";
-            mensaje += "Aceleración 0-100: " + vehiculo.getAceleracion() + " segundos\n";
-            mensaje += "Pilotos asignados: " + vehiculo.getPilotos().size() + "\n";
-            mensaje += "-----------------------------\n";
+            StringBuilder mensaje = new StringBuilder("Vehículos registrados - Página ")
+                    .append(paginaActual + 1).append(" de ").append(totalPaginas).append("\n\n");
+
+            for (int indice = inicio; indice < fin; indice++) {
+                Vehiculo vehiculo = listaVehiculos[indice];
+                mensaje.append("Equipo: ").append(vehiculo.getEquipo()).append("\n");
+                mensaje.append("Modelo: ").append(vehiculo.getModelo()).append("\n");
+                mensaje.append("Motor: ").append(vehiculo.getMotor()).append("\n");
+                mensaje.append("Velocidad máxima: ").append(formatearDato(vehiculo.getVelocidadMaxima(), "km/h")).append("\n");
+                mensaje.append("Aceleración 0-100: ").append(formatearDato(vehiculo.getAceleracion(), "segundos")).append("\n");
+                mensaje.append("Pilotos asignados: ").append(vehiculo.getPilotos().size()).append("\n");
+                mensaje.append("-----------------------------\n");
+            }
+
+            mensaje.append("\n1. Siguiente página\n2. Anterior página\n3. Salir");
+
+            String opcion = JOptionPane.showInputDialog(null, mensaje.toString());
+
+            if (opcion == null || opcion.equals("3")) {
+                return;
+            }
+
+            if (opcion.equals("1")) {
+                if (paginaActual < totalPaginas - 1) {
+                    paginaActual++;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ya está en la última página.");
+                }
+            } else if (opcion.equals("2")) {
+                if (paginaActual > 0) {
+                    paginaActual--;
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ya está en la primera página.");
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Opción inválida.");
+            }
         }
-
-        JOptionPane.showMessageDialog(null, mensaje);
     }
 
     public void buscarVehiculo() {
@@ -163,14 +361,17 @@ public class GestorVehiculos {
         mensaje += "Equipo: " + vehiculo.getEquipo() + "\n";
         mensaje += "Modelo: " + vehiculo.getModelo() + "\n";
         mensaje += "Motor: " + vehiculo.getMotor() + "\n";
-        mensaje += "Velocidad máxima: " + vehiculo.getVelocidadMaxima() + " km/h\n";
-        mensaje += "Aceleración 0-100: " + vehiculo.getAceleracion() + " segundos\n\n";
+        mensaje += "Velocidad máxima: " + formatearDato(vehiculo.getVelocidadMaxima(), "km/h") + "\n";
+        mensaje += "Aceleración 0-100: " + formatearDato(vehiculo.getAceleracion(), "segundos") + "\n\n";
 
         mensaje += "Pilotos asignados: \n";
         mensaje += obtenerResumenPilotos(vehiculo);
 
         mensaje += "\nRendimiento configurado: \n";
         mensaje += obtenerResumenRendimiento(vehiculo);
+
+        mensaje += "\nEspecificaciones técnicas 2026:\n";
+        mensaje += obtenerResumenEspecificaciones(vehiculo);
 
         JOptionPane.showMessageDialog(null, mensaje);
     }
@@ -210,6 +411,24 @@ public class GestorVehiculos {
         }
 
         return resumen;
+    }
+
+    private String obtenerResumenEspecificaciones(Vehiculo vehiculo) {
+        String resumen = "";
+
+        for (Map.Entry<String, String> entrada : vehiculo.getEspecificacionesTecnicas().entrySet()) {
+            resumen += "  " + entrada.getKey() + ": " + entrada.getValue() + "\n";
+        }
+
+        return resumen;
+    }
+
+    private String formatearDato(Double valor, String unidad) {
+        if (valor == null) {
+            return "No especificada";
+        }
+
+        return valor + " " + unidad;
     }
 
     public void editarVehiculo() {
@@ -535,20 +754,12 @@ public class GestorVehiculos {
             return;
         }
 
-        String modelo = JOptionPane.showInputDialog("Ingrese el modelo del vehículo al que desea asignar un piloto: ");
-
-        if (modelo == null || modelo.trim().isEmpty()) {
+        if (gestorPilotos == null) {
+            JOptionPane.showMessageDialog(null, "Error: El gestor de pilotos no está disponible.");
             return;
         }
 
-        Vehiculo vehiculo = vehiculos.get(modelo);
-
-        if (vehiculo == null) {
-            JOptionPane.showMessageDialog(null, "No se encontró un vehículo con ese modelo");
-            return;
-        }
-
-        String entradaId = JOptionPane.showInputDialog("Ingrese el ID del piloto: ");
+        String entradaId = JOptionPane.showInputDialog("Ingrese el ID del piloto que desea asignar:");
 
         if (entradaId == null) {
             return;
@@ -563,25 +774,47 @@ public class GestorVehiculos {
             return;
         }
 
+        Piloto piloto = gestorPilotos.obtenerPilotoPorId(idPiloto);
+
+        if (piloto == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró un piloto con ese ID.");
+            return;
+        }
+
+        String modelo = JOptionPane.showInputDialog("Ingrese el modelo del vehículo al que desea asignar el piloto:");
+
+        if (modelo == null || modelo.trim().isEmpty()) {
+            return;
+        }
+
+        Vehiculo vehiculo = vehiculos.get(modelo);
+
+        if (vehiculo == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró un vehículo con ese modelo");
+            return;
+        }
+
+        // Validar que el equipo del piloto coincida con el equipo del vehículo
+        if (!piloto.getEquipo().equalsIgnoreCase(vehiculo.getEquipo())) {
+            JOptionPane.showMessageDialog(null, 
+                "Error: El piloto " + piloto.getNombre() + " pertenece al equipo " + piloto.getEquipo() + 
+                ", pero el vehículo pertenece al equipo " + vehiculo.getEquipo() + ".\n" +
+                "Solo se pueden asignar pilotos del mismo equipo al vehículo.");
+            return;
+        }
+
         if (vehiculo.getPilotos().containsKey(idPiloto)) {
-            JOptionPane.showMessageDialog(null, "Ya hay un piloto asignado con ese ID en este vehículo");
+            JOptionPane.showMessageDialog(null, "El piloto ya está asignado a este vehículo");
             return;
         }
 
-        String nombrePiloto = JOptionPane.showInputDialog("Ingrese el nombre del piloto: ");
+        vehiculo.getPilotos().put(idPiloto, piloto.getNombre());
 
-        if (nombrePiloto == null || nombrePiloto.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(null, "El nombre del piloto no puede estar vacío");
-            return;
-        }
-
-        /* Nota: la asignación se hace con ID y nombre escritos a mano mientras el
-           módulo de pilotos no está terminado. Cuando ese módulo exista, aquí se
-           debe reemplazar por una búsqueda del piloto real dentro de ese gestor. */
-
-        vehiculo.getPilotos().put(idPiloto, nombrePiloto);
-
-        JOptionPane.showMessageDialog(null, "Piloto asignado correctamente al vehículo " + vehiculo.getModelo());
+        JOptionPane.showMessageDialog(null, 
+            "Piloto asignado correctamente:\n\n" +
+            "Piloto: " + piloto.getNombre() + " (ID: " + idPiloto + ")\n" +
+            "Equipo: " + piloto.getEquipo() + "\n" +
+            "Vehículo: " + vehiculo.getModelo());
     }
 
     public void compararVehiculos() {
@@ -626,8 +859,8 @@ public class GestorVehiculos {
 
         mensaje += vehiculo1.getModelo() + "  vs  " + vehiculo2.getModelo() + "\n\n";
 
-        mensaje += "Velocidad máxima: " + vehiculo1.getVelocidadMaxima() + " km/h  vs  " + vehiculo2.getVelocidadMaxima() + " km/h\n";
-        mensaje += "Aceleración 0-100: " + vehiculo1.getAceleracion() + " s  vs  " + vehiculo2.getAceleracion() + " s\n\n";
+        mensaje += "Velocidad máxima: " + formatearDato(vehiculo1.getVelocidadMaxima(), "km/h") + "  vs  " + formatearDato(vehiculo2.getVelocidadMaxima(), "km/h") + "\n";
+        mensaje += "Aceleración 0-100: " + formatearDato(vehiculo1.getAceleracion(), "s") + "  vs  " + formatearDato(vehiculo2.getAceleracion(), "s") + "\n\n";
 
         mensaje += "Rendimiento de " + vehiculo1.getModelo() + ": \n";
         mensaje += obtenerResumenRendimiento(vehiculo1);
@@ -638,4 +871,11 @@ public class GestorVehiculos {
         JOptionPane.showMessageDialog(null, mensaje);
     }
 
+    public Vehiculo obtenerVehiculo(String modelo) {
+        return vehiculos.get(modelo);
+    }
+
+    public Map<String, Vehiculo> obtenerTodosVehiculos() {
+        return vehiculos;
+    }
 }

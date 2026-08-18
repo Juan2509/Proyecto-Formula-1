@@ -2,6 +2,7 @@ package com.formula1;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 
@@ -757,6 +758,100 @@ public class GestorCircuitos {
 
     }
 
+    public void registrarGanadorHistorico() {
+        if (circuitos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay circuitos registrados");
+            return;
+        }
+
+        String nombreCircuito = JOptionPane.showInputDialog("Ingrese el nombre del circuito:");
+        if (nombreCircuito == null || nombreCircuito.trim().isEmpty()) {
+            return;
+        }
+
+        Circuito circuito = circuitos.get(nombreCircuito);
+        if (circuito == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró el circuito");
+            return;
+        }
+
+        String entradaAnio = JOptionPane.showInputDialog("Ingrese el año de la victoria:");
+        if (entradaAnio == null) {
+            return;
+        }
+
+        int anio;
+        try {
+            anio = Integer.parseInt(entradaAnio);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "El año debe ser un número entero");
+            return;
+        }
+
+        if (anio <= 0) {
+            JOptionPane.showMessageDialog(null, "El año debe ser mayor que 0");
+            return;
+        }
+
+        if (circuito.getGanadores().containsKey(anio)) {
+            JOptionPane.showMessageDialog(null, "Ya existe un ganador registrado para ese año");
+            return;
+        }
+
+        String entradaIdPiloto = JOptionPane.showInputDialog("Ingrese el ID del piloto ganador:");
+        if (entradaIdPiloto == null) {
+            return;
+        }
+
+        int idPiloto;
+        try {
+            idPiloto = Integer.parseInt(entradaIdPiloto);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(null, "El ID del piloto debe ser un número entero");
+            return;
+        }
+
+        if (idPiloto <= 0) {
+            JOptionPane.showMessageDialog(null, "El ID del piloto debe ser mayor que 0");
+            return;
+        }
+
+        circuito.getGanadores().put(anio, idPiloto);
+        JOptionPane.showMessageDialog(null, "Ganador histórico registrado correctamente");
+    }
+
+    public void consultarGanadoresHistoricos() {
+        if (circuitos.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay circuitos registrados");
+            return;
+        }
+
+        String nombreCircuito = JOptionPane.showInputDialog("Ingrese el nombre del circuito:");
+        if (nombreCircuito == null || nombreCircuito.trim().isEmpty()) {
+            return;
+        }
+
+        Circuito circuito = circuitos.get(nombreCircuito);
+        if (circuito == null) {
+            JOptionPane.showMessageDialog(null, "No se encontró el circuito");
+            return;
+        }
+
+        if (circuito.getGanadores().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "No hay ganadores históricos registrados para este circuito");
+            return;
+        }
+
+        Map<Integer, Integer> ganadoresOrdenados = new TreeMap<>(circuito.getGanadores());
+        String mensaje = "Ganadores históricos de " + circuito.getNombre() + ":\n\n";
+
+        for (Map.Entry<Integer, Integer> ganador : ganadoresOrdenados.entrySet()) {
+            mensaje += "Año " + ganador.getKey() + ": Piloto con ID " + ganador.getValue() + "\n";
+        }
+
+        JOptionPane.showMessageDialog(null, mensaje);
+    }
+
     public void eliminarCircuitos() {
 
         if (circuitos.isEmpty()) {
@@ -790,5 +885,23 @@ public class GestorCircuitos {
         circuitos.remove(nombre);
 
         JOptionPane.showMessageDialog(null, "Circuito eliminado correctamente");
+    }
+
+    public Circuito obtenerCircuito(String nombre) {
+        if (nombre == null) {
+            return null;
+        }
+        
+        for (Map.Entry<String, Circuito> entrada : circuitos.entrySet()) {
+            if (entrada.getKey().equalsIgnoreCase(nombre.trim())) {
+                return entrada.getValue();
+            }
+        }
+        
+        return null;
+    }
+
+    public Map<String, Circuito> obtenerTodosCircuitos() {
+        return circuitos;
     }
 }
